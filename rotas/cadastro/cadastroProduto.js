@@ -1,5 +1,4 @@
 const express = require ('express');
-const app = require ("express")();  
 const router = express.Router();
 const connection = require('../../banco_dados/conexaoBanco');
 
