@@ -12,27 +12,15 @@ router.post('/cadastroProduto',(req,res)=>{
     const owner_        = req.body.owner_;
     const rateio        = req.body.rateio;
 
-    const sqlQry = `insert into cadastro_produto 
-                    (resource_id,
-                     resource_type,
-                     resource_name,
-                     projeto,
-                     funcao,
-                     owner_,
-                     rateio) 
-                    values ('${resource_id}', 
-                            '${resource_type}', 
-                            '${resource_name}', 
-                            '${projeto}', 
-                            '${funcao}', 
-                            '${owner_}', 
-                            '${rateio}');`;
+    const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio) values (?,?,?,?,?,?,?);';
 
-     connection.query(sqlQry, function(error, results, fields){
-        if(error) 
+     connection.query(sqlQry,[resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio], function(error, results, fields){
+        if(error) {
           res.json(error);
-        else
-          res.json(results);
+          res.sendStatus(500)
+          return
+        }else
+          res.json("Dados inseridos com sucesso!");
         console.log('executou!');
     });
 });
