@@ -37,16 +37,18 @@ exports.cadastroProduto = (req,res) => {
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else{
-        const resource_id   = req.body.resource_id;
-        const resource_type = req.body.resource_type;
-        const resource_name = req.body.resource_name;
-        const projeto       = req.body.projeto;
-        const funcao        = req.body.funcao;
-        const owner_        = req.body.owner_;
-        const rateio        = req.body.rateio;
+        const produto = {}
+        produto.resource_id   = req.body.resource_id;
+        produto.resource_type = req.body.resource_type;
+        produto.resource_name = req.body.resource_name;
+        produto.projeto       = req.body.projeto;
+        produto.funcao        = req.body.funcao;
+        produto.owner_        = req.body.owner_;
+        produto.rateio        = req.body.rateio;
+
         const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio) values (?,?,?,?,?,?,?);';
 
-        connection.query(sqlQry,[resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio], (err, result)=>{
+        connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio], (err, result)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -56,6 +58,65 @@ exports.cadastroProduto = (req,res) => {
                 res.json({"message": result.insertId + " - Dados inseridos com sucesso!"})
             }
         })
+    }
+}
+
+exports.deletarProduto = (req,res)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else {
+        let parametro = '';
+        parametro = req.params.resource_id;
+        const sqlQry = 'delete from cadastro_produto where resource_id = ?'
+
+        connection.query(sqlQry,[parametro],(err,result) => {
+            if (err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"});
+            }else if(result.affectedRows > 0){
+                res.status(200)
+                res.json({"message":"Produto Deletado com Sucesso!"})
+            }else{
+                res.status(404)
+                res.json({"message":"Produto não encontrado"})
+            }
+        })
+    }
+}
+
+exports.alterarProduto = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })
+    }else {
+        const produto = {}
+        produto.resource_id     = req.params.resource_id;
+        produto.resource_type   = req.body.resource_type;
+        produto.resource_name   = req.body.resource_name;
+        produto.projeto         = req.body.projeto;
+        produto.funcao          = req.body.funcao;
+        produto.owner_          = req.body.owner_;
+        produto.rateio          = req.body.rateio;
+
+        const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ? where resource_id = ?'
+
+        connection.query(sqlQry, [produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.resource_id], (err,result) =>{
+            if(err){
+                console.log(err);
+                res.status(500)
+                res.json({"message":"Internal Server Error"})
+            }else if(result.affectedRows > 0){
+                res.status(202);
+                res.json({"message":"Dados alterados com sucesso!"})
+            }else{
+                res.status(404)
+                res.json({"message":"Nenhuma linha foi alterada"})
+            }
+        })
+        connection.end()
+
     }
 }
 

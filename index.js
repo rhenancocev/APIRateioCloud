@@ -1,7 +1,5 @@
 const app = require ("express")();   
 const bodyParser = require('body-parser');
-const buscaResourceId = require('./src/routes/cadastro/buscaResourceId');
-const cadastrarProduto = require('./src/routes/cadastro/cadastroProduto');
 
 const telaCadastroRouter = require('./src/routes/telaCadastroRouter');
 
@@ -15,7 +13,5 @@ console.log("API Rodando...");
 });
 
 //chamando as rotas
-app.use("/api", buscaResourceId);
-app.use("/api", cadastrarProduto);
 app.use('/api/v1',telaCadastroRouter)
 
