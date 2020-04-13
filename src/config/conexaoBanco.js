@@ -1,16 +1,17 @@
 try{
-    var mysql_npm = require('../node_modules/mysql');
+    var mysql_npm = require('../../node_modules/mysql');
+    
 }catch(err){
     console.log("Cannot find `mysql` module. Is it installed ? Try `npm install mysql` or `npm install`.");
 }
-
+var configBanco = require('../../.env')
 //- Connection configuration
 var db_config = {
-    host     : 'localhost',
-    port     : 3306,
-    user     : 'root',
-    password : 'admin',
-    database : 'rateiocloud',
+    host     : configBanco.DB_HOST,
+    port     : configBanco.DB_PORT,
+    user     : configBanco.DB_USER,
+    password : configBanco.DB_PASS,
+    database : configBanco.DB_NAME,
     insecureAuth : true
 };
 

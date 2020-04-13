@@ -1,7 +1,7 @@
 const app = require ("express")();   
 const bodyParser = require('body-parser');
-const buscaResourceId = require('./rotas/cadastro/buscaResourceId');
-const cadastrarProduto = require('./rotas/cadastro/cadastroProduto');
+const buscaResourceId = require('./src/rotas/cadastro/buscaResourceId');
+const cadastrarProduto = require('./src/rotas/cadastro/cadastroProduto');
 
 //configurando o body parser para pegar POSTS mais tarde
 app.use(bodyParser.urlencoded({ extended: true }));

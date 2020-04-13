@@ -1,6 +1,6 @@
 const express = require ('express');
 const router = express.Router();
-const connection = require('../../banco_dados/conexaoBanco');
+const connection = require('../../config/conexaoBanco');
 
 router.post('/cadastroProduto',(req,res)=>{
     const resource_id   = req.body.resource_id;
