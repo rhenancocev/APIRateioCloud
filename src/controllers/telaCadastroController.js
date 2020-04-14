@@ -115,10 +115,5 @@ exports.alterarProduto = (req,res) => {
                 res.json({"message":"Nenhuma linha foi alterada"})
             }
         })
-        connection.end()
-
     }
 }
-
-
-

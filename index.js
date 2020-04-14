@@ -8,7 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //iniciando servidor
-app.listen(3000, () => {
+app.listen(3009, () => {
 console.log("API Rodando...");
 });
 
