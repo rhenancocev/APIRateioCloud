@@ -1,5 +1,6 @@
 const app = require ("express")();   
 const bodyParser = require('body-parser');
+const portaServidorNode = require ('../APIRateioCloud/.env')
 
 const telaCadastroRouter = require('./src/routes/telaCadastroRouter');
 
@@ -8,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 //iniciando servidor
-app.listen(3009, () => {
+app.listen(portaServidorNode.PORTA_SERVIDOR_NODE, () => {
 console.log("API Rodando...");
 });
 
