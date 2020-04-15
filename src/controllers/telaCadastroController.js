@@ -61,13 +61,13 @@ exports.cadastroProduto = (req,res) => {
     }
 }
 
+//rota para deletar um registro a partir de um resource_id
 exports.deletarProduto = (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else {
-        let parametro = '';
-        parametro = req.params.resource_id;
+        let parametro = req.params.resource_id;
         const sqlQry = 'delete from cadastro_produto where resource_id = ?'
 
         connection.query(sqlQry,[parametro],(err,result) => {
@@ -86,6 +86,7 @@ exports.deletarProduto = (req,res)=>{
     }
 }
 
+//rota para fazer um update de um determinado resource_id
 exports.alterarProduto = (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
