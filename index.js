@@ -15,6 +15,6 @@ console.log("API Rodando...");
 });
 
 //chamando as rotas
-app.use('/api/v1',telaCadastroRouter);
+app.use('/api/cadastro',telaCadastroRouter);
 app.use('/api/consulta', telaConsultaRouter)
 
