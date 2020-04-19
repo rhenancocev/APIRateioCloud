@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const portaServidorNode = require ('../APIRateioCloud/.env')
 
 const telaCadastroRouter = require('./src/routes/telaCadastroRouter');
+const telaConsultaRouter = require('./src/routes/telaConsultaRouter')
 
 //configurando o body parser para pegar POSTS mais tarde
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,5 +15,6 @@ console.log("API Rodando...");
 });
 
 //chamando as rotas
-app.use('/api/v1',telaCadastroRouter)
+app.use('/api/v1',telaCadastroRouter);
+app.use('/api/consulta', telaConsultaRouter)
 

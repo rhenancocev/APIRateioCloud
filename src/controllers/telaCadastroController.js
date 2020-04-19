@@ -11,8 +11,7 @@ exports.listarPorId = (req,res) => {
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     } else{
-        let parametro = '';
-        parametro = req.params.resource_id;
+        let parametro = req.params.resource_id;
         const sqlQry = 'SELECT * FROM cadastro_produto WHERE resource_id = ?';
 
         connection.query(sqlQry,[parametro],(err,rows)=>{
@@ -40,11 +39,13 @@ exports.cadastroProduto = (req,res) => {
         const produto = {}
         produto.resource_id   = req.body.resource_id;
         produto.resource_type = req.body.resource_type;
-        produto.resource_name = req.body.resource_name;
-        produto.projeto       = req.body.projeto;
-        produto.funcao        = req.body.funcao;
-        produto.owner_        = req.body.owner_;
+        produto.resource_name = req.body.resource_name || null;
+        produto.projeto       = req.body.projeto || null;
+        produto.funcao        = req.body.funcao || null;
+        produto.owner_        = req.body.owner_ || null;
         produto.rateio        = req.body.rateio;
+
+
 
         const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio) values (?,?,?,?,?,?,?);';
 
@@ -93,13 +94,13 @@ exports.alterarProduto = (req,res) => {
         return res.status(422).json({ errors: errors.array() })
     }else {
         const produto = {}
-        produto.resource_id     = req.params.resource_id;
-        produto.resource_type   = req.body.resource_type;
-        produto.resource_name   = req.body.resource_name;
-        produto.projeto         = req.body.projeto;
-        produto.funcao          = req.body.funcao;
-        produto.owner_          = req.body.owner_;
-        produto.rateio          = req.body.rateio;
+        produto.resource_id   = req.params.resource_id;
+        produto.resource_type = req.body.resource_type;
+        produto.resource_name = req.body.resource_name || null;
+        produto.projeto       = req.body.projeto || null;
+        produto.funcao        = req.body.funcao || null;
+        produto.owner_        = req.body.owner_ || null;
+        produto.rateio        = req.body.rateio;
 
         const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ? where resource_id = ?'
 
