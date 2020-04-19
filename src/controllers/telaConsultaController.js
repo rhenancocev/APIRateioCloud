@@ -13,6 +13,7 @@ exports.lista = (req,res) => {
     } else{
         let parametro = req.params.parametro;
         let valor = req.params.valor;
+
         const sqlQry = 'SELECT * FROM cadastro_produto WHERE ' + parametro + ' = ' + "'" + valor + "'";
         connection.query(sqlQry,(err,rows)=>{
             if(err){
@@ -24,7 +25,7 @@ exports.lista = (req,res) => {
                 res.json(rows)
             }else{
                 res.status(404);
-                res.json({"message": "Nenhum produto encontrado com o resource_id informado!"})
+                res.json({"message": "Nenhum produto encontrado com o parametro informado!"})
             }
         })
     }
