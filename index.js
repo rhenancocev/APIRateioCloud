@@ -14,6 +14,14 @@ app.listen(portaServidorNode.PORTA_SERVIDOR_NODE, () => {
 console.log("API Rodando...");
 });
 
+//habilita o CORS
+app.use(function (req,res,next){
+    res.header('Access-Control-Allow-Origin','*');
+    res.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept, X-acess-token');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+});
+
 //chamando as rotas
 app.use('/api/cadastro',telaCadastroRouter);
 app.use('/api/consulta', telaConsultaRouter)
