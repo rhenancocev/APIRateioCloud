@@ -44,12 +44,11 @@ exports.cadastroProduto = (req,res) => {
         produto.funcao        = req.body.funcao || null;
         produto.owner_        = req.body.owner_ || null;
         produto.rateio        = req.body.rateio;
+        produto.cloud         = req.body.cloud;
 
+        const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud) values (?,?,?,?,?,?,?,?);';
 
-
-        const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio) values (?,?,?,?,?,?,?);';
-
-        connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio], (err, result)=>{
+        connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.cloud], (err, result)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -101,10 +100,11 @@ exports.alterarProduto = (req,res) => {
         produto.funcao        = req.body.funcao || null;
         produto.owner_        = req.body.owner_ || null;
         produto.rateio        = req.body.rateio;
+        produto.cloud         = req.body.cloud;
 
-        const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ? where resource_id = ?'
+        const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
 
-        connection.query(sqlQry, [produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.resource_id], (err,result) =>{
+        connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
             if(err){
                 console.log(err);
                 res.status(500)

@@ -11,5 +11,6 @@ CREATE TABLE `CADASTRO_PRODUTO` (
 	`funcao` varchar(300),
 	`owner_` varchar(300),
 	`rateio` int (1) not null,
+	`cloud` varchar(100) not null,
 	PRIMARY KEY (`resource_id`)
 );
