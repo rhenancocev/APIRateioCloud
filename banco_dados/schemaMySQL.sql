@@ -14,3 +14,5 @@ CREATE TABLE `CADASTRO_PRODUTO` (
 	`cloud` varchar(100) not null,
 	PRIMARY KEY (`resource_id`)
 );
+--script para dar permissão para a api utilizar a senha do root no BD
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password'
