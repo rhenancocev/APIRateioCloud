@@ -3,7 +3,8 @@ const bodyParser = require('body-parser');
 const portaServidorNode = require ('../APIRateioCloud/.env')
 
 const telaCadastroRouter = require('./src/routes/telaCadastroRouter');
-const telaConsultaRouter = require('./src/routes/telaConsultaRouter')
+const telaConsultaRouter = require('./src/routes/telaConsultaRouter');
+const telaImportExtratoRouter = require('./src/routes/telaImportExtratoRouter');
 
 //configurando o body parser para pegar POSTS mais tarde
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,5 +25,5 @@ app.use(function (req,res,next){
 
 //chamando as rotas
 app.use('/api/cadastro',telaCadastroRouter);
-app.use('/api/consulta', telaConsultaRouter)
-
+app.use('/api/consulta', telaConsultaRouter);
+app.use('/api/importcsv', telaImportExtratoRouter);
