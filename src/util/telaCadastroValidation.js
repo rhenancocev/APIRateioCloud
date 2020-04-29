@@ -16,7 +16,7 @@ exports.deletarProduto = [
 exports.alterarProduto = [
     check('resource_id').exists().withMessage('O resource_id não pode estar em branco'),
     check('resource_type').exists().trim().withMessage('O resource_type não pode estar em branco'),
-    check('rateio')
+    /*check('rateio')
     .exists().withMessage('O rateio não pode estar em branco')
-    .isInt().withMessage('O rateio deve ser numerico (0 ou 1)')
+    .isInt().withMessage('O rateio deve ser numerico (0 ou 1)')*/
 ]
