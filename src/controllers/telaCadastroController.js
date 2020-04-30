@@ -102,13 +102,6 @@ exports.alterarProduto = (req,res) => {
         produto.rateio        = req.body.rateio;
         produto.cloud         = req.body.cloud;
 
-        //paliativa front-end 
-        if(produto.rateio === 'false' || produto.rateio === '0'){
-            produto.rateio = 0
-        }else {
-            produto.rateio = 1
-        }
-
         const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
 
         connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
