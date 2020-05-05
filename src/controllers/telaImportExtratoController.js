@@ -3,6 +3,27 @@ const connection = require('../config/conexaoBanco');
 //modulo para validar erro utilizando a API express-validator
 const { validationResult } = require('express-validator');
 
+//rota para deletar todos os dados da tabela CLOUD_EXTRATO para receber a informação atualizada sempre.
+exports.deletaDadosTabela = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else{
+        const sqlQry = 'delete from CLOUD_EXTRATO';
+        connection.query(sqlQry, (err, result, rows)=>{
+            if(err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"})
+            }else{
+                res.status(201)
+                res.json({"message": result.insertId + " - Dados deletados com sucesso!"})
+            }
+        })
+    }
+
+}
+
 //rota para inserir os dados que vem da tela do import CSV
 exports.importCSV = (req,res) => {
     const errors = validationResult(req);
