@@ -1,0 +1,35 @@
+version: "2"
+
+services:
+    mysql:
+        image: mysql:5.7
+        container_name: mysql
+        hostname: mysql
+        ports:
+            - 3306:3306
+        volumes:
+            - .:/app/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: admin
+            MYSQL_DATABASE: rateiocloud
+            MYSQL_USER: rateio
+            MYSQL_PASSWORD: cloud
+        restart: always
+
+    app:
+     build: .
+     command: node index.js
+     ports: 
+        - 3009:3009
+     volumes: 
+        - .:/app
+     environment:
+        DB_SERVER_HOST: mysql
+        MYSQL_DATABASE: rateiocloud
+        MYSQL_USER: rateio
+        MYSQL_PASSWORD: cloud
+        NODE_TIMEOUT: 15
+     depends_on:
+        - mysql
+     links:
+        - mysql

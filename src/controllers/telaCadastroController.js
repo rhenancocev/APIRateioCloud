@@ -12,7 +12,7 @@ exports.listarPorId = (req,res) => {
         return res.status(422).json({ errors: errors.array() })  
     } else{
         let parametro = req.params.resource_id;
-        const sqlQry = 'SELECT * FROM cadastro_produto WHERE resource_id = ?';
+        const sqlQry = 'SELECT * FROM CADASTRO_PRODUTO WHERE resource_id = ?';
 
         connection.query(sqlQry,[parametro],(err,rows)=>{
             if(err){
@@ -46,7 +46,7 @@ exports.cadastroProduto = (req,res) => {
         produto.rateio        = req.body.rateio;
         produto.cloud         = req.body.cloud;
 
-        const sqlQry = 'insert into cadastro_produto (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud) values (?,?,?,?,?,?,?,?);';
+        const sqlQry = 'insert into CADASTRO_PRODUTO (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud) values (?,?,?,?,?,?,?,?);';
 
         connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.cloud], (err, result)=>{
             if(err){
@@ -68,7 +68,7 @@ exports.deletarProduto = (req,res)=>{
         return res.status(422).json({ errors: errors.array() })  
     }else {
         let parametro = req.params.resource_id;
-        const sqlQry = 'delete from cadastro_produto where resource_id = ?'
+        const sqlQry = 'delete from CADASTRO_PRODUTO where resource_id = ?'
 
         connection.query(sqlQry,[parametro],(err,result) => {
             if (err){
@@ -102,7 +102,7 @@ exports.alterarProduto = (req,res) => {
         produto.rateio        = req.body.rateio;
         produto.cloud         = req.body.cloud;
 
-        const sqlQry = 'update cadastro_produto set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
+        const sqlQry = 'update CADASTRO_PRODUTO set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
 
         connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
             if(err){

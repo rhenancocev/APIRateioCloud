@@ -4,15 +4,14 @@ try{
 }catch(err){
     console.log("Cannot find `mysql` module. Is it installed ? Try `npm install mysql` or `npm install`.");
 }
-//var configBanco = require('../../.env')
+
 //- Connection configuration
 var db_config = {
-    host     : 'localhost',//configBanco.DB_HOST,
-    port     : 3306,//configBanco.DB_PORT,
-    user     : 'root',//configBanco.DB_USER,
-    password : 'admin',//configBanco.DB_PASS,
-    database : 'rateiocloud'//configBanco.DB_NAME,
-    //insecureAuth : true
+    host     : 'mysql',
+    port     : 3306,
+    user     : 'rateio',
+    password : 'cloud',
+    database : 'rateiocloud'
 };
 
 //- Create the connection variable
@@ -22,7 +21,7 @@ var connection = mysql_npm.createConnection(db_config);
 connection.connect(function(err){
     if(err) {
         // mysqlErrorHandling(connection, err);
-        console.log("\n\t *** Cannot establish a connection with the database. ***");
+        console.log("\n\t *** Cannot establish a connection with the database. ***" + err);
 
         connection = reconnect(connection);
     }else {

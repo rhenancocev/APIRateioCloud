@@ -14,7 +14,7 @@ exports.lista = (req,res) => {
         let parametro = req.params.parametro;
         let valor = req.params.valor;
 
-        const sqlQry = 'SELECT * FROM cadastro_produto WHERE ' + parametro + ' = ' + "'" + valor + "'";
+        const sqlQry = 'SELECT * FROM CADASTRO_PRODUTO WHERE ' + parametro + ' = ' + "'" + valor + "'";
         connection.query(sqlQry,(err,rows)=>{
             if(err){
                 console.log(err);
@@ -37,7 +37,7 @@ exports.listaTudo = (req,res)=>{
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     } else{
-        const sqlQry = 'select * from cadastro_produto';
+        const sqlQry = 'select * from CADASTRO_PRODUTO';
         connection.query(sqlQry,(err,rows)=>{
             if(err){
                 console.log(err);

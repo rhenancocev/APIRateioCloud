@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3009
 
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["npm", "start"]
