@@ -17,7 +17,7 @@ CREATE TABLE `CADASTRO_PRODUTO` (
 );
 
 CREATE TABLE `CLOUD_EXTRATO` (
-	`period` DATE ,
+	`period` varchar(20) ,
 	`account_period` varchar(100) ,
 	`resource_Id` varchar(200) ,
 	`resource_name` varchar(200) ,
