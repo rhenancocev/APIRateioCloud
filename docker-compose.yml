@@ -6,7 +6,7 @@ services:
         container_name: mysql
         hostname: mysql
         ports:
-            - 3306:3306
+            - 3307:3306
         volumes:
             - /mysql:/var/lib/mysql
         environment:
@@ -16,13 +16,13 @@ services:
             MYSQL_PASSWORD: cloud
         restart: always
 
-    app:
+    node_api:
      build: .
      command: node index.js
      ports: 
         - 3009:3009
      volumes: 
-        - .:/app
+        - .:/node_api
      environment:
         DB_SERVER_HOST: mysql
         MYSQL_DATABASE: rateiocloud
@@ -31,5 +31,4 @@ services:
         NODE_TIMEOUT: 15
      depends_on:
         - mysql
-     links:
-        - mysql
+

@@ -69,3 +69,40 @@ exports.importCSV = (req,res) => {
         })
     }
 }
+
+//-------------------------------------------------------------------------------------//
+
+//rota para inserir os dados que vem da tela do import CSV
+exports.importCSV2 = (req,res) => {
+    try {
+
+        const produto = {}
+        var i = 0
+        var erro = null;
+        for(i = 0; i < req.body.cliente.length; i++){
+
+            produto.nome                   = req.body.cliente[i].nome;
+            produto.sobrenome              = req.body.cliente[i].sobrenome;
+            produto.idade                  = req.body.cliente[i].idade;
+
+            const sqlQry = 'insert into teste (nome,sobrenome,idade) values (?,?,?)'
+
+            
+            connection.query(sqlQry,[produto.nome,produto.sobrenome,produto.idade], (err,result)=>{
+                
+                if(err){
+                    try {
+                        return res.status(500).json({"message":"Internal Server Error"})
+                    } catch (error) {console.log(error)}
+                     
+                }else{
+                    try {
+                        return res.status(201).json({"message": "Dados inseridos com sucesso!"})
+                    } catch (error) {}
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({"message":"Internal Server Error"})
+    }
+}
