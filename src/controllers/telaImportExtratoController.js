@@ -25,7 +25,7 @@ exports.deletaDadosTabela = (req,res) => {
 }
 
 //rota para inserir os dados que vem da tela do import CSV
-exports.importCSV = (req,res) => {
+exports.importCSV2 = (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
@@ -73,20 +73,18 @@ exports.importCSV = (req,res) => {
 //-------------------------------------------------------------------------------------//
 
 //rota para inserir os dados que vem da tela do import CSV
-exports.importCSV2 = (req,res) => {
+exports.importCSV = (req,res) => {
     try {
 
         const produto = {}
-        var i = 0
-        var erro = null;
-        for(i = 0; i < req.body.cliente.length; i++){
+        
+        for(var i = 0; i < req.body.cliente.length; i++){
 
             produto.nome                   = req.body.cliente[i].nome;
             produto.sobrenome              = req.body.cliente[i].sobrenome;
             produto.idade                  = req.body.cliente[i].idade;
 
             const sqlQry = 'insert into teste (nome,sobrenome,idade) values (?,?,?)'
-
             
             connection.query(sqlQry,[produto.nome,produto.sobrenome,produto.idade], (err,result)=>{
                 
@@ -97,7 +95,7 @@ exports.importCSV2 = (req,res) => {
                      
                 }else{
                     try {
-                        return res.status(201).json({"message": "Dados inseridos com sucesso!"})
+                        return res.status(201).json({"message": result.insertId + " - Dados inseridos com sucesso!"})
                     } catch (error) {}
                 }
             })
