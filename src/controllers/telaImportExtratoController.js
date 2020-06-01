@@ -9,7 +9,7 @@ exports.deletaDadosTabela = (req,res) => {
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else{
-        const sqlQry = 'delete from CLOUD_EXTRATO';
+        const sqlQry = 'delete from teste';
         connection.query(sqlQry, (err, result, rows)=>{
             if(err){
                 console.log(err);
@@ -78,11 +78,11 @@ exports.importCSV = (req,res) => {
 
         const produto = {}
         
-        for(var i = 0; i < req.body.cliente.length; i++){
+        for(var i = 0; i < req.body.rateio.length; i++){
 
-            produto.nome                   = req.body.cliente[i].nome;
-            produto.sobrenome              = req.body.cliente[i].sobrenome;
-            produto.idade                  = req.body.cliente[i].idade;
+            produto.nome                   = req.body.rateio[i].nome;
+            produto.sobrenome              = req.body.rateio[i].sobrenome;
+            produto.idade                  = req.body.rateio[i].idade;
 
             const sqlQry = 'insert into teste (nome,sobrenome,idade) values (?,?,?)'
             
@@ -96,7 +96,7 @@ exports.importCSV = (req,res) => {
                 }else{
                     try {
                         return res.status(201).json({"message": result.insertId + " - Dados inseridos com sucesso!"})
-                    } catch (error) {}
+                    } catch (error){}
                 }
             })
         }
