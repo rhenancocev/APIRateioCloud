@@ -78,11 +78,11 @@ exports.importCSV = (req,res) => {
 
         const produto = {}
         
-        for(var i = 0; i < req.body.rateio.length; i++){
+        for(var i = 0; i < req.body.CSVProduto.length; i++){
 
-            produto.nome                   = req.body.rateio[i].nome;
-            produto.sobrenome              = req.body.rateio[i].sobrenome;
-            produto.idade                  = req.body.rateio[i].idade;
+            produto.nome                   = req.body.CSVProduto[i].nome;
+            produto.sobrenome              = req.body.CSVProduto[i].sobrenome;
+            produto.idade                  = req.body.CSVProduto[i].idade;
 
             const sqlQry = 'insert into teste (nome,sobrenome,idade) values (?,?,?)'
             
@@ -103,4 +103,28 @@ exports.importCSV = (req,res) => {
     } catch (error) {
         return res.status(500).json({"message":"Internal Server Error"})
     }
+}
+
+//api para verificar se tem registros na tabela de extrato
+exports.consultarStage = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else{
+        const sqlQry = 'select count(1) as "Registros encontrados " from teste';
+        connection.query(sqlQry, (err, rows)=>{
+            if(err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"})
+            }else if(rows.length > 0){
+                res.status(201)
+                res.json(rows)
+            }else{
+                res.status(404);
+                res.json({"message": "Nenhum registro encontrado!"})
+            }
+        })
+    }
+
 }

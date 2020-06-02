@@ -4,5 +4,6 @@ const telaImportExtratoController = require ('../controllers/telaImportExtratoCo
 
 router.post('/', telaImportExtratoController.importCSV);
 router.delete('/delete', telaImportExtratoController.deletaDadosTabela);
+router.get('/consultaStage', telaImportExtratoController.consultarStage);
 
 module.exports = router;
