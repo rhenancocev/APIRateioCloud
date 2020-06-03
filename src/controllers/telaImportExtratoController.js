@@ -90,8 +90,9 @@ exports.importCSV = (req,res) => {
                 
                 if(err){
                     try {
-                        return res.status(500).json({"message":"Internal Server Error" + err})
-                    } catch (error) {}
+                        console.log(err)
+                        return res.status(500).json(err)
+                    } catch (error) {console.log(error)}
                      
                 }else{
                     try {
