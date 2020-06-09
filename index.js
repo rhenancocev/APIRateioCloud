@@ -7,8 +7,8 @@ const telaConsultaRouter = require('./src/routes/telaConsultaRouter');
 const telaImportExtratoRouter = require('./src/routes/telaImportExtratoRouter');
 
 //configurando o body parser para pegar POSTS mais tarde
-app.use(bodyParser.urlencoded({ limit: '50mb',extended: true }));
-app.use(bodyParser.json({limit: '50mb', extended: true}));
+app.use(bodyParser.urlencoded({ limit: '100mb',extended: true }));
+app.use(bodyParser.json({limit: '100mb', extended: true}));
 
 
 

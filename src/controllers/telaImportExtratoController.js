@@ -129,3 +129,57 @@ exports.consultarStage = (req,res) => {
     }
 
 }
+
+exports.importCSV2 = (req,res) => {
+    try {
+
+        const produto = {}
+        
+        for(var i = 0; i < req.body.CSVProduto.length; i++){
+
+            produto.period                      = req.body.CSVProduto[i].period;
+            produto.account_period              = req.body.CSVProduto[i].account_period;
+            produto.resource_Id                 = req.body.CSVProduto[i].resource_Id;
+            produto.resource_name               = req.body.CSVProduto[i].resource_name;
+            produto.resource_tag                = req.body.CSVProduto[i].resource_tag;
+            produto.be                          = req.body.CSVProduto[i].be;
+            produto.billing_mode                = req.body.CSVProduto[i].billing_mode;
+            produto.fee_name                    = req.body.CSVProduto[i].fee_name;
+            produto.resource_type               = req.body.CSVProduto[i].resource_type;
+            produto.product                     = req.body.CSVProduto[i].product;
+            produto.product_specifications      = req.body.CSVProduto[i].product_specifications;
+            produto.region                      = req.body.CSVProduto[i].region;
+            produto.enterprise_project_id       = req.body.CSVProduto[i].enterprise_project_id;
+            produto.enterprise_project_name     = req.body.CSVProduto[i].enterprise_project_name;
+            produto.usage_type                  = req.body.CSVProduto[i].usage_type;
+            produto.usage_                      = req.body.CSVProduto[i].usage_;
+            produto.usage_type_in               = req.body.CSVProduto[i].usage_type_in;
+            produto.usage_unit                  = req.body.CSVProduto[i].usage_unit;
+            produto.official_total_amount_usd   = req.body.CSVProduto[i].official_total_amount_usd;
+            produto.discount_amount_usd         = req.body.CSVProduto[i].discount_amount_usd;
+            produto.tax_usd                     = req.body.CSVProduto[i].tax_usd;
+            produto.amount_usd                  = req.body.CSVProduto[i].amount_usd;
+            produto.transaction_time            = req.body.CSVProduto[i].transaction_time;
+
+            const sqlQry = 'insert into CLOUD_EXTRATO (period,account_period,resource_Id,resource_name,resource_tag,be,billing_mode,fee_name,resource_type,product,product_specifications,region,enterprise_project_id,enterprise_project_name,usage_type,usage_,usage_type_in,usage_unit,official_total_amount_usd,discount_amount_usd,tax_usd,amount_usd,transaction_time) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
+
+            
+            connection.query(sqlQry,[produto.period,produto.account_period,produto.resource_Id,produto.resource_name,produto.resource_tag,produto.be,produto.billing_mode,produto.fee_name,produto.resource_type,produto.product,produto.product_specifications,produto.region,produto.enterprise_project_id,produto.enterprise_project_name,produto.usage_type,produto.usage_,produto.usage_type_in,produto.usage_unit,produto.official_total_amount_usd,produto.discount_amount_usd,produto.tax_usd,produto.amount_usd,produto.transaction_time], (err,result)=>{
+                
+                if(err){
+                    try {
+                        console.log(err)
+                        return res.status(500).json(err)
+                    } catch (error) {console.log(error)}
+                     
+                }else{
+                    try {
+                        return res.status(201).json({"message": result.insertId + " - Dados inseridos com sucesso!"})
+                    } catch (error){}
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({"message":"Internal Server Error"})
+    }
+}

@@ -3,6 +3,7 @@ const router = express.Router();
 const telaImportExtratoController = require ('../controllers/telaImportExtratoController');
 
 router.post('/', telaImportExtratoController.importCSV);
+router.post('/2', telaImportExtratoController.importCSV2);
 router.delete('/delete', telaImportExtratoController.deletaDadosTabela);
 router.get('/consultaStage', telaImportExtratoController.consultarStage);
 

@@ -11,7 +11,8 @@ var db_config = {
     port     : 3306,
     user     : 'rateio',
     password : 'cloud',
-    database : 'rateiocloud'
+    database : 'rateiocloud'//,
+   // connectionLimit: 10
 };
 
 //- Create the connection variable
