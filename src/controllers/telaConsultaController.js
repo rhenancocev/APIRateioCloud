@@ -1,5 +1,5 @@
 //modulo para acessar o banco de dados
-const connection = require('../config/conexaoBanco');
+const connection = require('../config/connection-middleware');
 //modulo para validar erro utilizando a API express-validator
 const { validationResult } = require('express-validator');
 
@@ -15,7 +15,7 @@ exports.lista = (req,res) => {
         let valor = req.params.valor;
 
         const sqlQry = 'SELECT * FROM CADASTRO_PRODUTO WHERE ' + parametro + ' = ' + "'" + valor + "'";
-        connection.query(sqlQry,(err,rows)=>{
+        req.connection.query(sqlQry,(err,rows)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -38,7 +38,7 @@ exports.listaTudo = (req,res)=>{
         return res.status(422).json({ errors: errors.array() })  
     } else{
         const sqlQry = 'select * from CADASTRO_PRODUTO';
-        connection.query(sqlQry,(err,rows)=>{
+        req.connection.query(sqlQry,(err,rows)=>{
             if(err){
                 console.log(err);
                 res.status(500);

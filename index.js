@@ -1,5 +1,6 @@
 const app = require ("express")();   
 const bodyParser = require('body-parser');
+const connectionMiddleware = require ('./src/config/connection-middleware');
 //const portaServidorNode = require ('../APIRateioCloud/.env')
 
 const telaCadastroRouter = require('./src/routes/telaCadastroRouter');
@@ -10,6 +11,14 @@ const telaImportExtratoRouter = require('./src/routes/telaImportExtratoRouter');
 app.use(bodyParser.urlencoded({ limit: '100mb',extended: true }));
 app.use(bodyParser.json({limit: '100mb', extended: true}));
 
+// ativando nosso middleware
+app.use(connectionMiddleware());
+
+// middleware de tratamento de erro
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+	res.status(500).json({ error: err.toString() });
+});
 
 
 //iniciando servidor
@@ -29,3 +38,5 @@ app.use(function (req,res,next){
 app.use('/api/cadastro',telaCadastroRouter);
 app.use('/api/consulta', telaConsultaRouter);
 app.use('/api/importcsv', telaImportExtratoRouter);
+
+module.exports = app;

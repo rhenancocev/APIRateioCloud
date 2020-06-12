@@ -1,5 +1,5 @@
 //modulo para acessar o banco de dados
-const connection = require('../config/conexaoBanco');
+const connection = require('../config/connection-middleware');
 //modulo para validar erro utilizando a API express-validator
 const { validationResult } = require('express-validator');
 
@@ -14,7 +14,7 @@ exports.listarPorId = (req,res) => {
         let parametro = req.params.resource_id;
         const sqlQry = 'SELECT * FROM CADASTRO_PRODUTO WHERE resource_id = ?';
 
-        connection.query(sqlQry,[parametro],(err,rows)=>{
+        req.connection.query(sqlQry,[parametro],(err,rows)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -48,7 +48,7 @@ exports.cadastroProduto = (req,res) => {
 
         const sqlQry = 'insert into CADASTRO_PRODUTO (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud) values (?,?,?,?,?,?,?,?);';
 
-        connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.cloud], (err, result)=>{
+        req.connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.cloud], (err, result)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -70,7 +70,7 @@ exports.deletarProduto = (req,res)=>{
         let parametro = req.params.resource_id;
         const sqlQry = 'delete from CADASTRO_PRODUTO where resource_id = ?'
 
-        connection.query(sqlQry,[parametro],(err,result) => {
+        req.connection.query(sqlQry,[parametro],(err,result) => {
             if (err){
                 console.log(err);
                 res.status(500);
@@ -104,7 +104,7 @@ exports.alterarProduto = (req,res) => {
 
         const sqlQry = 'update CADASTRO_PRODUTO set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
 
-        connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
+        req.connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
             if(err){
                 console.log(err);
                 res.status(500)

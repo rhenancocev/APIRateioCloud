@@ -1,4 +1,4 @@
-try{
+/*try{
     var mysql_npm = require('../../node_modules/mysql');
     
 }catch(err){
@@ -7,6 +7,7 @@ try{
 
 //- Connection configuration
 var db_config = {
+    connectionLimit : 100,
     host     : 'mysql',
     port     : 3306,
     user     : 'rateio',
@@ -86,5 +87,5 @@ connection.on('error', function(err) {
 
 });
 
-module.exports = connection;
+module.exports = connection;*/
 
