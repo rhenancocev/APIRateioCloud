@@ -9,7 +9,7 @@ exports.deletaDadosTabela = (req,res) => {
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else{
-        const sqlQry = 'delete from teste';
+        const sqlQry = 'delete from CLOUD_EXTRATO';
         req.connection.query(sqlQry, (err, result, rows)=>{
             if(err){
                 console.log(err);
@@ -24,49 +24,13 @@ exports.deletaDadosTabela = (req,res) => {
 
 }
 
-//-------------------------------------------------------------------------------------//
-
-//rota para inserir os dados que vem da tela do import CSV
-exports.importCSV = (req,res) => {
-    try {
-
-        const produto = {}
-        
-        for(var i = 0; i < req.body.CSVProduto.length; i++){
-
-            produto.nome                   = req.body.CSVProduto[i].nome;
-            produto.sobrenome              = req.body.CSVProduto[i].sobrenome;
-            produto.idade                  = req.body.CSVProduto[i].idade;
-
-            const sqlQry = 'insert into teste (nome,sobrenome,idade) values (?,?,?)'
-            
-            req.connection.query(sqlQry,[produto.nome,produto.sobrenome,produto.idade], (err,result)=>{
-                
-                if(err){
-                    try {
-                        console.log(err)
-                        return res.status(500).json(err)
-                    } catch (error) {console.log(error)}
-                     
-                }else{
-                    try {
-                        return res.status(201).json({"message": result.insertId + " - Dados inseridos com sucesso!"})
-                    } catch (error){}
-                }
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({"message":"Internal Server Error"})
-    }
-}
-
 //api para verificar se tem registros na tabela de extrato
 exports.consultarStage = (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else{
-        const sqlQry = 'select count(1) as "Registros encontrados " from teste';
+        const sqlQry = 'select count(1) as "Registros encontrados " from CLOUD_EXTRATO';
         req.connection.query(sqlQry, (err, rows)=>{
             if(err){
                 console.log(err);
@@ -84,61 +48,9 @@ exports.consultarStage = (req,res) => {
 
 }
 
-exports.importCSV3 = (req,res) => {
-    try {
 
-        const produto = {}
-        
-        for(var i = 0; i < req.body.length; i++){
-
-            produto.period                      = req.body[i].period;
-            produto.account_period              = req.body[i].account_period;
-            produto.resource_Id                 = req.body[i].resource_Id;
-            produto.resource_name               = req.body[i].resource_name;
-            produto.resource_tag                = req.body[i].resource_tag;
-            produto.be                          = req.body[i].be;
-            produto.billing_mode                = req.body[i].billing_mode;
-            produto.fee_name                    = req.body[i].fee_name;
-            produto.resource_type               = req.body[i].resource_type;
-            produto.product                     = req.body[i].product;
-            produto.product_specifications      = req.body[i].product_specifications;
-            produto.region                      = req.body[i].region;
-            produto.enterprise_project_id       = req.body[i].enterprise_project_id;
-            produto.enterprise_project_name     = req.body[i].enterprise_project_name;
-            produto.usage_type                  = req.body[i].usage_type;
-            produto.usage_                      = req.body[i].usage_;
-            produto.usage_type_in               = req.body[i].usage_type_in;
-            produto.usage_unit                  = req.body[i].usage_unit;
-            produto.official_total_amount_usd   = req.body[i].official_total_amount_usd;
-            produto.discount_amount_usd         = req.body[i].discount_amount_usd;
-            produto.tax_usd                     = req.body[i].tax_usd;
-            produto.amount_usd                  = req.body[i].amount_usd;
-            produto.transaction_time            = req.body[i].transaction_time;
-
-            const sqlQry = 'insert into CLOUD_EXTRATO (period,account_period,resource_Id,resource_name,resource_tag,be,billing_mode,fee_name,resource_type,product,product_specifications,region,enterprise_project_id,enterprise_project_name,usage_type,usage_,usage_type_in,usage_unit,official_total_amount_usd,discount_amount_usd,tax_usd,amount_usd,transaction_time) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);';
-
-            req.connection.query(sqlQry,[produto.period,produto.account_period,produto.resource_Id,produto.resource_name,produto.resource_tag,produto.be,produto.billing_mode,produto.fee_name,produto.resource_type,produto.product,produto.product_specifications,produto.region,produto.enterprise_project_id,produto.enterprise_project_name,produto.usage_type,produto.usage_,produto.usage_type_in,produto.usage_unit,produto.official_total_amount_usd,produto.discount_amount_usd,produto.tax_usd,produto.amount_usd,produto.transaction_time], (err,result)=>{
-                
-                if(err){
-                    try {
-                        console.log(err)
-                        return res.status(500).json(err)
-                    } catch (error) {console.log(error)}
-                     
-                }else{
-                    try {
-                        return res.status(201).json({"message": result.insertId + " - Dados inseridos com sucesso!"})
-                    } catch (error){}
-                }
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({"message":"Internal Server Error"})
-    }
-}
-//-------------------------------------------------//
-
-exports.importCSV2 = (req,res) => {
+//rota para inserir os dados que vem da tela do import CSV
+exports.importCSV = (req,res) => {
     try {
 
         const produto = {}
@@ -205,5 +117,52 @@ exports.importCSV2 = (req,res) => {
         }
     } catch (error) {
         return res.status(500).json({"message":"Internal Server Error"})
+    }
+}
+
+//rota filtrar.
+exports.deletaFiltro = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else{
+        const sqlQry = 'delete from CLOUD_EXTRATO where amount_usd = 0.00000000 and date_ not between ("2020-05-31") and ("2020-06-02");';
+        req.connection.query(sqlQry, (err, result, rows)=>{
+            if(err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"})
+            }else{
+                res.status(201)
+                res.json({"message": result.insertId + " - Dados deletados com sucesso!"})
+            }
+        })
+    }
+
+}
+
+
+exports.deletaFiltro = (req,res)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else {
+        let dataIni = req.params.data_inicio;
+        let dataFim = req.params.data_fim;
+        const sqlQry = 'delete from CLOUD_EXTRATO where amount_usd = 0.00000000 or date_ not between (?) and (?);';
+
+        req.connection.query(sqlQry,[dataIni, dataFim],(err,result) => {
+            if (err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"});
+            }else if(result.affectedRows > 0){
+                res.status(200)
+                res.json({"message":"Produto Deletado com Sucesso!"})
+            }else{
+                res.status(404)
+                res.json({"message":"Produto não encontrado"})
+            }
+        })
     }
 }
