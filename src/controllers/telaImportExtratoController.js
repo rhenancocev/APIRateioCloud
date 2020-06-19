@@ -140,7 +140,7 @@ exports.deletaFiltro = (req,res)=>{
                 res.json({"message":"Internal Server Error"});
             }else if(result.affectedRows > 0){
                 res.status(200)
-                res.json({"message":"Produto Deletado com Sucesso!"})
+                res.json({"message": result.affectedRows + " linhas deletadas com sucesso!"})
             }else{
                 res.status(404)
                 res.json({"message":"Produto não encontrado"})

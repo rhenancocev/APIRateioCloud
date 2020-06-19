@@ -8,7 +8,8 @@ const pool = mysql.createPool({
     port     : 3306,
     user     : 'rateio',
     password : 'cloud',
-    database : 'rateiocloud'
+    database : 'rateiocloud',
+    multipleStatements: true
 });
 
 console.log('pool => criado');
