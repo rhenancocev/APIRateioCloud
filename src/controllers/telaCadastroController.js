@@ -45,10 +45,16 @@ exports.cadastroProduto = (req,res) => {
         produto.owner_        = req.body.owner_ || null;
         produto.rateio        = req.body.rateio;
         produto.cloud         = req.body.cloud;
+        produto.aprovador     = req.body.aprovador || null;
+        produto.cr            = req.body.cr || null;
 
-        const sqlQry = 'insert into CADASTRO_PRODUTO (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud) values (?,?,?,?,?,?,?,?);';
+        const sqlQry = 'insert into CADASTRO_PRODUTO (resource_id,resource_type,resource_name,projeto,funcao,owner_,rateio,cloud,aprovador,cr) values (?,upper(?),upper(?),upper(?),upper(?),upper(?),upper(?),upper(?),upper(?),upper(?));';
 
-        req.connection.query(sqlQry,[produto.resource_id,produto.resource_type,produto.resource_name,produto.projeto,produto.funcao,produto.owner_,produto.rateio,produto.cloud], (err, result)=>{
+        req.connection.query(sqlQry,[produto.resource_id,produto.resource_type,
+            produto.resource_name,produto.projeto,
+            produto.funcao,produto.owner_,
+            produto.rateio,produto.cloud,
+            produto.aprovador, produto.cr], (err, result)=>{
             if(err){
                 console.log(err);
                 res.status(500);
@@ -101,10 +107,16 @@ exports.alterarProduto = (req,res) => {
         produto.owner_        = req.body.owner_ || null;
         produto.rateio        = req.body.rateio;
         produto.cloud         = req.body.cloud;
+        produto.aprovador     = req.body.aprovador || null;
+        produto.cr            = req.body.cr || null;
 
-        const sqlQry = 'update CADASTRO_PRODUTO set resource_type = ?, resource_name = ?, projeto = ?, funcao = ?, owner_ = ?, rateio = ?, cloud = ? where resource_id = ?'
+        const sqlQry = 'update CADASTRO_PRODUTO set resource_type = upper(?), resource_name = upper(?), projeto = upper(?), funcao = upper(?), owner_ = upper(?), rateio = upper(?), cloud = upper(?), aprovador = upper(?), cr = upper(?) where resource_id = ?'
 
-        req.connection.query(sqlQry, [produto.resource_type, produto.resource_name, produto.projeto, produto.funcao, produto.owner_, produto.rateio, produto.cloud, produto.resource_id], (err,result) =>{
+        req.connection.query(sqlQry, [produto.resource_type, produto.resource_name, 
+            produto.projeto, produto.funcao, 
+            produto.owner_, produto.rateio, 
+            produto.cloud, produto.resource_id,
+            produto.aprovador, produto.cr], (err,result) =>{
             if(err){
                 console.log(err);
                 res.status(500)
