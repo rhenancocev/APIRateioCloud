@@ -147,4 +147,52 @@ exports.deletaFiltro = (req,res)=>{
             }
         })
     }
+};
+
+//api para verificar se tem algum resource_id que foi importado na tabela de extrato que não está na tabela de cadastro;
+exports.consultaCadastroResourceId = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else{
+        const sqlQry = 'SELECT distinct(RESOURCE_ID), RESOURCE_TYPE, RESOURCE_NAME FROM CLOUD_EXTRATO EXTRATO WHERE EXTRATO.RESOURCE_ID NOT IN (SELECT CAD.RESOURCE_ID FROM CADASTRO_PRODUTO CAD) group by RESOURCE_ID,RESOURCE_TYPE,RESOURCE_NAME;';
+        req.connection.query(sqlQry, (err, rows)=>{
+            if(err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"})
+            }else if(rows.length > 0){
+                res.status(201)
+                res.json(rows)
+            }else{
+                res.status(201);
+                res.json({"message": "Todos os resource_id estão cadastrados na tabela de cadastro!"})
+            }
+        })
+    }
+};
+
+//api para fazer o MERGE entre a tabela de cadastro e a tabela de extrato
+exports.mergeCadastro = (req,res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })
+    }else {
+
+        const sqlQry = 'UPDATE CLOUD_EXTRATO EXTRATO SET EXTRATO.RESOURCE_NAME 	= (SELECT CAD.RESOURCE_NAME FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID),EXTRATO.PROJETO = (SELECT CAD.PROJETO FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.FUNCAO = (SELECT CAD.FUNCAO FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.OWNER_ = (SELECT CAD.OWNER_ FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.RATEIO = (SELECT CAD.RATEIO FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.CLOUD = (SELECT CAD.CLOUD FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.APROVADOR = (SELECT CAD.APROVADOR FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID), EXTRATO.CR = (SELECT CAD.CR FROM CADASTRO_PRODUTO CAD WHERE CAD.RESOURCE_ID = EXTRATO.RESOURCE_ID) WHERE EXTRATO.RESOURCE_ID IN (SELECT CAD.RESOURCE_ID FROM CADASTRO_PRODUTO CAD);';
+
+        req.connection.query(sqlQry, (err,result) =>{
+            if(err){
+                console.log(err);
+                res.status(500)
+                res.json({"message":"Internal Server Error"})
+            }else if(result.affectedRows > 0){
+                res.status(202);
+                res.json({"message": result.affectedRows + " linhas alteradas com sucesso!"})
+            }else{
+                res.status(404)
+                res.json({"message":"Nenhuma linha foi alterada"})
+            }
+        })
+    }
 }
