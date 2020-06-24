@@ -115,8 +115,8 @@ exports.alterarProduto = (req,res) => {
         req.connection.query(sqlQry, [produto.resource_type, produto.resource_name, 
             produto.projeto, produto.funcao, 
             produto.owner_, produto.rateio, 
-            produto.cloud, produto.resource_id,
-            produto.aprovador, produto.cr], (err,result) =>{
+            produto.cloud,produto.aprovador, 
+            produto.cr,produto.resource_id], (err,result) =>{
             if(err){
                 console.log(err);
                 res.status(500)
