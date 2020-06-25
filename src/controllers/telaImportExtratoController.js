@@ -165,7 +165,7 @@ exports.consultaCadastroResourceId = (req,res) => {
                 res.status(201)
                 res.json(rows)
             }else{
-                res.status(201);
+                res.status(200);
                 res.json({"message": "Todos os resource_id estão cadastrados na tabela de cadastro!"})
             }
         })
