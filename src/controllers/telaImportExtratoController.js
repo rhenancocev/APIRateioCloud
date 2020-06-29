@@ -30,7 +30,7 @@ exports.consultarStage = (req,res) => {
     if(!errors.isEmpty()){
         return res.status(422).json({ errors: errors.array() })  
     }else{
-        const sqlQry = 'SELECT count(1) as "Registros encontrados " , min(date_) as "Data minima ", max(date_) as "Data maxima " from CLOUD_EXTRATO;';
+        const sqlQry = "SELECT count(1) as 'Registros encontrados ' , min(DATE_FORMAT(date_, '%Y-%m-%d')) as 'Data minima ', max(DATE_FORMAT(date_, '%Y-%m-%d')) as 'Data maxima ' from CLOUD_EXTRATO;";
         req.connection.query(sqlQry, (err, rows)=>{
             if(err){
                 console.log(err);
