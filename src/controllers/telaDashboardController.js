@@ -3,6 +3,7 @@ const connection = require('../config/connection-middleware');
 //modulo para validar erro utilizando a API express-validator
 const { validationResult } = require('express-validator');
 
+//api que extrai tudo da tabela CLOUD_EXTRATO para gerar EXCEL
 exports.extraiExtratoCloud = (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -20,6 +21,35 @@ exports.extraiExtratoCloud = (req,res) => {
             }else{
                 res.status(200);
                 res.json({"message": "Não existe dados para serem exportados!"})
+            }
+        })
+    }
+};
+
+//rota que faz os calculos de rateio
+exports.calculoRateioPorProjeto = (req,res)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else {
+        let valor_fatura = req.query.valor_fatura;
+        let vencimento_fatura = req.query.vencimento_fatura;
+        let data_inicio = req.query.data_inicio;
+        let data_fim = req.query.data_fim;
+
+        const sqlQry = "SELECT GROUP_CONCAT(distinct(resource_name) SEPARATOR ' , ') as DESCRICAO, APROVADOR, PROJETO, CR, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD, (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM') * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where projeto is not null and cr <> '' and rateio = 'NAO')) as CUSTO_RATEIO, SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM') * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where projeto is not null and cr <> '' and rateio = 'NAO')) as CUSTO_TOTAL_USD, SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where projeto is not null and cr <> '' and rateio = 'NAO') as PORCENTAGEM, (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where projeto is not null and cr <> '' and rateio = 'NAO')) * ? as CUSTO_TOTAL_BRL, concat(?) AS VENCIMENTO_FATURA FROM CLOUD_EXTRATO where projeto is not null and cr <> '' and rateio = 'NAO' and date_ between (?) and (?) group by projeto,cr,APROVADOR;";
+    
+        req.connection.query(sqlQry,[valor_fatura,vencimento_fatura,data_inicio, data_fim],(err,rows) => {
+            if (err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"});
+            }else if(rows.length > 0){
+                res.status(201)
+                res.json(rows)
+            }else{
+                res.status(404)
+                res.json({"message":"Não foi encontrado nenhum registro na tabela para efetuar o rateio!"})
             }
         })
     }
