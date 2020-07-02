@@ -37,8 +37,6 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         let data_inicio = req.query.data_inicio;
         let data_fim = req.query.data_fim;
 
-       // const sqlQry = "SELECT GROUP_CONCAT(distinct(resource_name) SEPARATOR ' , ') as DESCRICAO, APROVADOR, PROJETO, CR, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD, (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM') * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO')) as CUSTO_RATEIO, SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM') * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO')) as CUSTO_TOTAL_USD, SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO') as PORCENTAGEM, (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO')) * ? as CUSTO_TOTAL_BRL, concat(?) AS VENCIMENTO_FATURA FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) group by projeto,cr,APROVADOR;";
-    
         const sqlQry = "SELECT GROUP_CONCAT(distinct(resource_name) SEPARATOR ' , ') as DESCRICAO, APROVADOR, PROJETO, CR, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as CUSTO_SEM_RATEIO_USD_TOTAL,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
