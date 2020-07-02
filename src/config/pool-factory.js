@@ -1,7 +1,7 @@
 // app/config/pool-factory.js 
 
 const mysql = require('mysql');
-//prd
+/*/prd
 const pool = mysql.createPool({
     connectionLimit:100,
     host     : 'mysql',
@@ -10,8 +10,8 @@ const pool = mysql.createPool({
     password : 'cloud',
     database : 'rateiocloud',
     multipleStatements: true
-});
-/*/hml
+});*/
+//hml
 const pool = mysql.createPool({
     connectionLimit:100,
     host     : '10.100.18.5',
@@ -20,7 +20,7 @@ const pool = mysql.createPool({
     password : 'admin',
     database : 'rateiocloud',
     multipleStatements: true
-});/*/
+});//
 
 console.log('pool => criado');
 

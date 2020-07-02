@@ -42,21 +42,23 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
         + " SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_TOTAL_USD,"
         + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM,"
-        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between ('2020-01-01') and ('2020-01-30'))/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between ('2020-01-01') and ('2020-01-30')) as PORCENTAGEM_TOTAL,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM_TOTAL,"
         + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
         + " ((select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL_TOTAL,"
         + " concat(?) AS VENCIMENTO_FATURA"
         + " FROM CLOUD_EXTRATO"
         + " where rateio = 'NAO' and date_ between (?) and (?) group by projeto,cr,APROVADOR;"
-
+        
         req.connection.query(sqlQry,[data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
             data_inicio, data_fim,
+            data_inicio, data_fim,data_inicio, data_fim,
             data_inicio, data_fim,valor_fatura,
             data_inicio, data_fim,data_inicio, data_fim,valor_fatura,
             vencimento_fatura,
             data_inicio, data_fim],(err,rows) => {
+                
             if (err){
                 console.log(err);
                 res.status(500);
