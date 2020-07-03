@@ -26,7 +26,7 @@ exports.extraiExtratoCloud = (req,res) => {
     }
 };
 
-//rota que faz os calculos de rateio
+//rota que faz os calculos de rateio por projeto
 exports.calculoRateioPorProjeto = (req,res)=>{
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -36,6 +36,8 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         let vencimento_fatura = req.query.vencimento_fatura;
         let data_inicio = req.query.data_inicio;
         let data_fim = req.query.data_fim;
+
+        if(data_inicio === '' || data_fim === '') return res.json({"message":"Campos: DATA INICIO / DATA FIM são obrigatórios!"})
 
         const sqlQry = "SELECT GROUP_CONCAT(distinct(resource_name) SEPARATOR ' , ') as DESCRICAO, APROVADOR, PROJETO, CR, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as CUSTO_SEM_RATEIO_USD_TOTAL,"
@@ -58,6 +60,56 @@ exports.calculoRateioPorProjeto = (req,res)=>{
             data_inicio, data_fim,data_inicio, data_fim,valor_fatura,
             vencimento_fatura,
             data_inicio, data_fim],(err,rows) => {
+                
+            if (err){
+                console.log(err);
+                res.status(500);
+                res.json({"message":"Internal Server Error"});
+            }else if(rows.length > 0){
+                res.status(201)
+                res.json(rows)
+            }else{
+                res.status(404)
+                res.json({"message":"Não foi encontrado nenhum registro na tabela para efetuar o rateio!"})
+            }
+        })
+    }
+};
+
+//rota que faz os calculos de rateio por resource_id detalhado
+exports.calculoRateioDetalhado = (req,res)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422).json({ errors: errors.array() })  
+    }else {
+        let valor_fatura = req.query.valor_fatura;
+        let vencimento_fatura = req.query.vencimento_fatura;
+        let data_inicio = req.query.data_inicio;
+        let data_fim = req.query.data_fim;
+        let projeto = req.query.projeto;
+
+        if(data_inicio === '' || data_fim === '' || projeto === '') return res.json({"message":"Campos: DATA INICIO / DATA FIM / PROJETO são obrigatórios!"})
+
+        const sqlQry = "SELECT distinct(resource_name) as DESCRICAO, resource_type, funcao, owner_, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?) as CUSTO_SEM_RATEIO_USD_TOTAL_PROJETO,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
+        + " SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_TOTAL_USD,"
+        + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM_TOTAL_PROJETO,"
+        + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
+        + " ((select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL_TOTAL_PROJETO,"
+        + " concat(?) AS VENCIMENTO_FATURA"
+        + " FROM CLOUD_EXTRATO where rateio = 'NAO' and PROJETO = ? and date_ between (?) and (?) group by resource_name,resource_type,funcao,owner_;";
+        
+        req.connection.query(sqlQry,[data_inicio, data_fim, projeto,
+            data_inicio, data_fim, data_inicio, data_fim,
+            data_inicio, data_fim, data_inicio, data_fim,
+            data_inicio, data_fim,
+            data_inicio, data_fim, projeto, data_inicio, data_fim,
+            data_inicio, data_fim, valor_fatura,
+            data_inicio, data_fim, projeto, data_inicio, data_fim, valor_fatura,
+            vencimento_fatura,
+            projeto, data_inicio, data_fim],(err,rows) => {
                 
             if (err){
                 console.log(err);
