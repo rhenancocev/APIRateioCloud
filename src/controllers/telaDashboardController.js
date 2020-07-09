@@ -43,6 +43,7 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as CUSTO_SEM_RATEIO_USD_TOTAL,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
         + " SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_TOTAL_USD,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where date_  between (?) and (?)) as CUSTO_TOTAL_USD_TOTAL,"
         + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM_TOTAL,"
         + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
@@ -54,6 +55,7 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         req.connection.query(sqlQry,[data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
+            data_inicio, data_fim,
             data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
             data_inicio, data_fim,valor_fatura,
@@ -83,17 +85,17 @@ exports.calculoRateioDetalhado = (req,res)=>{
         return res.status(422).json({ errors: errors.array() })  
     }else {
         let valor_fatura = req.query.valor_fatura;
-        let vencimento_fatura = req.query.vencimento_fatura;
         let data_inicio = req.query.data_inicio;
         let data_fim = req.query.data_fim;
         let projeto = req.query.projeto;
 
         if(data_inicio === '' || data_fim === '' || projeto === '') return res.json({"message":"Campos: DATA INICIO / DATA FIM / PROJETO são obrigatórios!"})
 
-        const sqlQry = "SELECT distinct(resource_name) as DESCRICAO, RESOURCE_TYPE, FUNCAO, OWNER_, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD,"
+        const sqlQry = "SELECT distinct(resource_name) as DESCRICAO, RESOURCE_TYPE, FUNCAO, OWNER_, PROJETO, SUM(AMOUNT_USD) as CUSTO_SEM_RATEIO_USD,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?) as CUSTO_SEM_RATEIO_USD_TOTAL_PROJETO,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
         + " SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_TOTAL_USD,"
+        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where date_ between (?) and (?) and PROJETO = ?) as CUSTO_TOTAL_USD_TOTAL,"
         + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM,"
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM_TOTAL_PROJETO,"
         + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
@@ -104,6 +106,7 @@ exports.calculoRateioDetalhado = (req,res)=>{
             data_inicio, data_fim, data_inicio, data_fim,
             data_inicio, data_fim, data_inicio, data_fim,
             data_inicio, data_fim,
+            data_inicio, data_fim, projeto,
             data_inicio, data_fim, projeto, data_inicio, data_fim,
             data_inicio, data_fim, valor_fatura,
             data_inicio, data_fim, projeto, data_inicio, data_fim, valor_fatura,
