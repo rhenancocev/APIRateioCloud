@@ -7,6 +7,7 @@ const telaCadastroRouter        = require('./src/routes/telaCadastroRouter');
 const telaConsultaRouter        = require('./src/routes/telaConsultaRouter');
 const telaImportExtratoRouter   = require('./src/routes/telaImportExtratoRouter');
 const telaDashboardRouter       = require ('./src/routes/telaDashboardRouter');
+const telaReplicaDadosHistRouter = require('./src/routes/telaReplicaDadosHistRouter');
 
 //configurando o body parser para pegar POSTS mais tarde
 app.use(bodyParser.urlencoded({ limit: '100mb',extended: true }));
@@ -40,5 +41,6 @@ app.use('/api/cadastro',telaCadastroRouter);
 app.use('/api/consulta', telaConsultaRouter);
 app.use('/api/importcsv', telaImportExtratoRouter);
 app.use('/api/dashboard', telaDashboardRouter);
+app.use('/api/replica', telaReplicaDadosHistRouter)
 
 module.exports = app;
