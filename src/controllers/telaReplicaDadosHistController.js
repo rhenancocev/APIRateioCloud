@@ -56,8 +56,8 @@ exports.ReplicaDados = async (req,res)=>{
             return res.status(422).json({ errors: errors.array() })  
         }else {
       
-            let data_inicio = req.body.data_inicio;
-            let data_fim = req.body.data_fim;
+            let data_inicio = req.query.data_inicio;
+            let data_fim = req.query.data_fim;
     
             const select = "select count(1) as Qt_registro, DATE_FORMAT(min(date_), '%Y-%m-%d') as Data_min, DATE_FORMAT(max(date_), '%Y-%m-%d') as Data_max from CLOUD_EXTRATO_HIST where date_ between (?) and (?);";
             if(data_inicio === '' || data_fim === '') return res.json({"message":"Todos os campos são obrigatórios!"})
