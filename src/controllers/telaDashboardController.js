@@ -89,6 +89,7 @@ exports.calculoRateioDetalhado = (req,res)=>{
         let data_fim = req.query.data_fim;
         let projeto = req.query.projeto;
         let valor_total = req.query.valor_total
+        let porcentagem_total = req.query.porcentagem_total
 
         if(data_inicio === '' || data_fim === '' || projeto === '') return res.json({"message":"Campos: DATA INICIO / DATA FIM / PROJETO são obrigatórios!"})
 
@@ -97,8 +98,8 @@ exports.calculoRateioDetalhado = (req,res)=>{
         + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' and date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) as CUSTO_RATEIO,"
         + " (SUM(AMOUNT_USD) + (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'SIM' AND date_ between (?) and (?)) * (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)))) as CUSTO_TOTAL_USD,"
         + " concat(?) as CUSTO_TOTAL_USD_TOTAL,"
-        + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?) as PORCENTAGEM,"
-        + " (select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' AND PROJETO = ? and date_ between (?) and (?)) as PORCENTAGEM_TOTAL_PROJETO,"
+        + " SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?)) as PORCENTAGEM,"
+        + " concat(?) as PORCENTAGEM_TOTAL_PROJETO,"
         + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
         + " ((select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL_TOTAL_PROJETO"
         + " FROM CLOUD_EXTRATO where rateio = 'NAO' and PROJETO = ? and date_ between (?) and (?) group by resource_name,resource_type,funcao,owner_;";
@@ -107,8 +108,8 @@ exports.calculoRateioDetalhado = (req,res)=>{
             data_inicio, data_fim, data_inicio, data_fim,
             data_inicio, data_fim, data_inicio, data_fim,
             valor_total,
-            data_inicio, data_fim, projeto,
-            data_inicio, data_fim, projeto,projeto, data_inicio, data_fim,
+            data_inicio, data_fim,
+            porcentagem_total,
             data_inicio, data_fim, valor_fatura,
             data_inicio, data_fim, projeto, data_inicio, data_fim, valor_fatura,
             projeto, data_inicio, data_fim],(err,rows) => {

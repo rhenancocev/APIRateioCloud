@@ -27,8 +27,6 @@ exports.ReplicaDados = async (req,res)=>{
                     res.status(500);
                     res.json({"message":"Internal Server Error"});
                 }else {
-                    console.log (result.affectedRows);
-                    console.log ("Primeiro passo!")
                     return resolve(result.affectedRows);
                     
                 }
@@ -40,13 +38,11 @@ exports.ReplicaDados = async (req,res)=>{
             req.connection.query(sqlQry,[vencimento_fatura,valor_fatura,data_inicio,data_fim],(err,result) => {
                 
                 if (err){
-                    console.log(err);
                     res.status(500);
                     res.json({"message":"Internal Server Error"});
                 }else {
-                    console.log ("Segundo passo!")
                     res.status(200)
-                    return res.json({"message": result.affectedRows + " linhas replicadas com sucesso!"})
+                    return res.json({"message": result.affectedRows + " Registros replicadas com sucesso!"})
                 }
             })
         }
@@ -59,22 +55,28 @@ exports.ReplicaDados = async (req,res)=>{
         if(!errors.isEmpty()){
             return res.status(422).json({ errors: errors.array() })  
         }else {
-            let vencimento_fatura = req.body.vencimento_fatura;
-            let valor_fatura = req.body.valor_fatura;
+      
             let data_inicio = req.body.data_inicio;
             let data_fim = req.body.data_fim;
     
-            const select = "select count(1) as Qt_registro, DATE_FORMAT(min(date_), '%Y-%m-%d') as Data_min, DATE_FORMAT(max(date_), '%Y-%m-%d') as Data_max from CLOUD_EXTRATO_HIST where vencimento_fatura = ? and valor_fatura = ? and date_ between (?) and (?);";
-            if(data_inicio === '' || data_fim === '' || valor_fatura === '' || vencimento_fatura === '') return res.json({"message":"Todos os campos são obrigatórios!"})
+            const select = "select count(1) as Qt_registro, DATE_FORMAT(min(date_), '%Y-%m-%d') as Data_min, DATE_FORMAT(max(date_), '%Y-%m-%d') as Data_max from CLOUD_EXTRATO_HIST where date_ between (?) and (?);";
+            if(data_inicio === '' || data_fim === '') return res.json({"message":"Todos os campos são obrigatórios!"})
 
-            req.connection.query(select,[vencimento_fatura,valor_fatura,data_inicio,data_fim],(err,rows) => {
+            req.connection.query(select,[data_inicio,data_fim],(err,rows) => {
                 if (err){
                     console.log(err);
                     res.status(500);
                     res.json({"message":"Internal Server Error"});
                 }else if(rows.length > 0){
+                    console.log(rows[0].Qt_registro)
+                    if(rows[0].Qt_registro === 0){
+                        const Qt_registro = rows[0].Qt_registro
+                        res.status(201)
+                        res.json({"message:":"Não foi encontrado nenhum registro no banco de dados!", Qt_registro})
+                    }else{
                     res.status(201)
-                    res.json(rows)
+                    res.json({"message:":"Dados existentes no histórico para o período informado", rows})
+                    }
                 }else{
                     res.status(404);
                     res.json({"message": "Nenhum registro encontrado!"})
