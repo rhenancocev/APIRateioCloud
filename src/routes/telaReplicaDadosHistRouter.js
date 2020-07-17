@@ -4,5 +4,5 @@ const telaReplicaDadosHistController = require ('../controllers/telaReplicaDados
 
 router.get('/consultaReplicaDados', telaReplicaDadosHistController.consultaReplicaDados);
 router.post('/replicaDados', telaReplicaDadosHistController.ReplicaDados);
-
+router.get('/extraiDadosHistoricos', telaReplicaDadosHistController.extrairHistorico);
 module.exports = router;
