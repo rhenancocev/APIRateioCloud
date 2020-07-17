@@ -50,7 +50,7 @@ exports.calculoRateioPorProjeto = (req,res)=>{
         + " ((select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL_TOTAL,"
         + " concat(?) AS VENCIMENTO_FATURA"
         + " FROM CLOUD_EXTRATO"
-        + " where rateio = 'NAO' and date_ between (?) and (?) group by projeto,cr,APROVADOR;"
+        + " where rateio = 'NAO' and date_ between (?) and (?) group by projeto,cr,APROVADOR order by CUSTO_TOTAL_BRL DESC;"
         
         req.connection.query(sqlQry,[data_inicio, data_fim,
             data_inicio, data_fim,data_inicio, data_fim,
@@ -102,7 +102,7 @@ exports.calculoRateioDetalhado = (req,res)=>{
         + " concat(?) as PORCENTAGEM_TOTAL_PROJETO,"
         + " (SUM(AMOUNT_USD)/(select SUM(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL,"
         + " ((select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?) and PROJETO = ?)/(select sum(AMOUNT_USD) FROM CLOUD_EXTRATO where rateio = 'NAO' and date_ between (?) and (?))) * ? as CUSTO_TOTAL_BRL_TOTAL_PROJETO"
-        + " FROM CLOUD_EXTRATO where rateio = 'NAO' and PROJETO = ? and date_ between (?) and (?) group by resource_name,resource_type,funcao,owner_;";
+        + " FROM CLOUD_EXTRATO where rateio = 'NAO' and PROJETO = ? and date_ between (?) and (?) group by resource_name,resource_type,funcao,owner_ order by CUSTO_TOTAL_BRL DESC;";
         
         req.connection.query(sqlQry,[data_inicio, data_fim, projeto,
             data_inicio, data_fim, data_inicio, data_fim,
